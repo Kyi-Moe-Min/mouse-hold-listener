@@ -8,6 +8,12 @@ class MouseHoldListener extends React.Component {
   time = 0;
   timeout = 0;
 
+  constructor() {
+    super();
+    this.onPointerDown = this.onPointerDown.bind(this);
+    this.onPointerUp = this.onPointerUp.bind(this);
+  }
+
   componentDidMount() {
     document.addEventListener("pointerup", this.onPointerUp);
   }
@@ -16,13 +22,13 @@ class MouseHoldListener extends React.Component {
     document.removeEventListener("pointerup", this.onPointerUp);
   }
 
-  onPointerDown = e => {
+  onPointerDown() {
     const { onHoldStart, duration } = this.props;
     this.time = new Date().getTime();
     this.timeout = setTimeout(onHoldStart, duration * MILLISECOND);
-  };
+  }
 
-  onPointerUp = e => {
+  onPointerUp() {
     const { onHoldStop, duration } = this.props;
     clearTimeout(this.timeout);
     if (
@@ -30,7 +36,7 @@ class MouseHoldListener extends React.Component {
       new Date().getTime() - this.time > duration * MILLISECOND
     )
       onHoldStop();
-  };
+  }
 
   render() {
     return (
