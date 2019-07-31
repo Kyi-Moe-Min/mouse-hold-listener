@@ -1,0 +1,13 @@
+.border {
+  margin: 10px auto;
+  border: 1px solid gray;
+  width: 100px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 50px;
+  cursor: default;
+}
+
+.hide {
+  display: none;
+}
