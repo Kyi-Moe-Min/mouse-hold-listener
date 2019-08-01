@@ -40,13 +40,12 @@ export class MouseHoldListener extends React.Component {
   onPointerUp() {
     const { onHoldEnd, duration, onClick } = this.props;
     clearTimeout(this.timeout);
-    if (
-      this.timeout &&
-      new Date().getTime() - this.time > duration * MILLISECOND
-    ) {
-      this.timeout = 0;
-      onHoldEnd();
-    } else if (this.timeout) onClick();
+    if (this.timeout) {
+      if (new Date().getTime() - this.time > duration * MILLISECOND) {
+        this.timeout = 0;
+        onHoldEnd();
+      } else onClick();
+    }
   }
 
   render() {
