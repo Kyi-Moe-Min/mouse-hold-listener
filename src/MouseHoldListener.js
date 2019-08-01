@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const DEFAULT_DURATION = 0.5;
 const MILLISECOND = 1000;
 
-class MouseHoldListener extends React.Component {
+export class MouseHoldListener extends React.Component {
   time = 0;
   timeout = 0;
 
@@ -16,11 +16,20 @@ class MouseHoldListener extends React.Component {
 
   componentDidMount() {
     document.addEventListener("pointerup", this.onPointerUp);
+    document.addEventListener("pointermove", this.handleMove);
   }
 
   componentWillUnmount() {
     document.removeEventListener("pointerup", this.onPointerUp);
+    document.removeEventListener("pointermove", this.handleMove);
   }
+
+  handleMove = e => {
+    if (this.timeout && (e.movementX || e.movementY)) {
+      clearInterval(this.timeout);
+      this.timeout = 0;
+    }
+  };
 
   onPointerDown() {
     const { onHoldStart, duration } = this.props;
@@ -29,23 +38,27 @@ class MouseHoldListener extends React.Component {
   }
 
   onPointerUp() {
-    const { onHoldStop, duration } = this.props;
+    const { onHoldEnd, duration, onClick } = this.props;
     clearTimeout(this.timeout);
     if (
       this.timeout &&
       new Date().getTime() - this.time > duration * MILLISECOND
-    )
-      onHoldStop();
+    ) {
+      this.timeout = 0;
+      onHoldEnd();
+    } else if (this.timeout) onClick();
   }
 
   render() {
     return (
-      <div {...this.props} onPointerDown={this.onPointerDown}>
+      <div className={this.props.className} onPointerDown={this.onPointerDown}>
         {this.props.children}
       </div>
     );
   }
 }
+
+export default MouseHoldListener;
 
 MouseHoldListener.defaultProps = {
   duration: DEFAULT_DURATION
@@ -53,8 +66,7 @@ MouseHoldListener.defaultProps = {
 
 MouseHoldListener.propTypes = {
   onHoldStart: PropTypes.func.isRequired,
-  onHoldStop: PropTypes.func.isRequired,
+  onHoldEnd: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   duration: PropTypes.number
 };
-
-export default MouseHoldListener;

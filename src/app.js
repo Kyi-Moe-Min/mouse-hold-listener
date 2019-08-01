@@ -18,7 +18,7 @@ export default class extends React.Component {
       <div>
         <MHL
           onHoldStart={this.showDiv}
-          onHoldStop={this.hideDiv}
+          onHoldEnd={this.hideDiv}
           className="border"
         >
           hold me
